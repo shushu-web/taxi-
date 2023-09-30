@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>タクシーメーター</title>
+    <style>
+        #progressContainer {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #progressBar {
+            width: 0;
+            height: 20px;
+            background-color: #4caf50;
+            transition: width 0.5s;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+
+        #coneIcon {
+            width: 20px;
+            height: 20px;
+            background-image: url('cone.png'); /* コーンマークの画像ファイルを指定 */
+            background-size: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translateX(-50%); /* コーンマークを中央揃えにする */
+        }
+
+        #timer, #units {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ShuShuTAXI タクシーメーター</h1>
+    <p>経過時間: <span id="timer">0</span> </p>
+    <p>コーン: <span id="units">0</span></p>
+    <div id="progressContainer">
+        <div id="progressBar">
+            <div id="coneIcon"></div>
+        </div>
+    </div>
+    <button id="startButton" onclick="startStopwatch()">スタート</button>
+    <button id="resetButton" onclick="resetStopwatch()">リセット</button>
+
+    <script>
+        var timerInterval;
+        var elapsedTime = 0;
+        var units = 0;
+
+        function startStopwatch() {
+            if (!timerInterval) {
+                document.getElementById("startButton").textContent = "ストップ";
+                timerInterval = setInterval(updateTimer, 1000);
+            } else {
+                document.getElementById("startButton").textContent = "スタート";
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimer() {
+            elapsedTime++;
+            document.getElementById("timer").textContent = elapsedTime + " 秒";
+
+            // 10秒ごとに1コーン加算
+            if (elapsedTime % 10 === 0) {
+                units++;
+                document.getElementById("units").textContent = units + " コーン";
+            }
+
+            // 進行状況バーの更新
+            var progressBar = document.getElementById("progressBar");
+            var progress = (elapsedTime % 10) / 10 * 100; // 進行状況の割合
+            progressBar.style.width = progress + "%";
+
+            // コーンマークを進行状況バーに合わせて移動
+            var coneIcon = document.getElementById("coneIcon");
+            coneIcon.style.left = progress + "%";
+        }
+
+        function resetStopwatch() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            elapsedTime = 0;
+            units = 0;
+            document.getElementById("timer").textContent = elapsedTime + " 秒";
+            document.getElementById("units").textContent = units + " コーン";
+            document.getElementById("startButton").textContent = "スタート";
+            var progressBar = document.getElementById("progressBar");
+            progressBar.style.width = "0%";
+            var coneIcon = document.getElementById("coneIcon");
+            coneIcon.style.left = "0%";
+        }
+    </script>
+</body>
+</html>
