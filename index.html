@@ -40,28 +40,32 @@
     </style>
 </head>
 <body>
-    <h1>ShuShuTAXI タクシーメーター</h1>
-    <p>経過時間: <span id="timer">0</span> </p>
-    <p>コーン: <span id="units">0</span></p>
+    <h1>SHuShuTAXI タクシーメーター</h1>
+    <p>経過時間: <span id="timer">0</span></p>
+    <p>料金: <span id="units">0</span></p>
     <div id="progressContainer">
         <div id="progressBar">
             <div id="coneIcon"></div>
         </div>
     </div>
-    <button id="startButton" onclick="startStopwatch()">スタート</button>
+    <button id="startButton" onclick="startStopwatch()">走行開始</button>
     <button id="resetButton" onclick="resetStopwatch()">リセット</button>
+    <button id="increasePriceButton" onclick="increasePrice()">深夜</button>
+    <button id="decreasePriceButton" onclick="decreasePrice()">株主</button>
+    <button id="discountPriceButton" onclick="discountPrice()">得割</button>
 
     <script>
         var timerInterval;
         var elapsedTime = 0;
         var units = 0;
+        var priceMultiplier = 1.0;
 
         function startStopwatch() {
             if (!timerInterval) {
-                document.getElementById("startButton").textContent = "ストップ";
+                document.getElementById("startButton").textContent = "走行終了";
                 timerInterval = setInterval(updateTimer, 1000);
             } else {
-                document.getElementById("startButton").textContent = "スタート";
+                document.getElementById("startButton").textContent = "走行開始";
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
@@ -71,12 +75,10 @@
             elapsedTime++;
             document.getElementById("timer").textContent = elapsedTime + " 秒";
 
-            // 10秒ごとに1コーン加算
-            if (elapsedTime % 10 === 0) {
-                units++;
-                document.getElementById("units").textContent = units + " コーン";
-            }
-
+            // コーンの数を計算し、表示
+            units = Math.floor(elapsedTime / 10) * priceMultiplier;
+            document.getElementById("units").textContent = units + " コーン";
+            
             // 進行状況バーの更新
             var progressBar = document.getElementById("progressBar");
             var progress = (elapsedTime % 10) / 10 * 100; // 進行状況の割合
@@ -99,6 +101,18 @@
             progressBar.style.width = "0%";
             var coneIcon = document.getElementById("coneIcon");
             coneIcon.style.left = "0%";
+        }
+
+        function increasePrice() {
+            priceMultiplier = 1.5;
+        }
+
+        function decreasePrice() {
+            priceMultiplier = 0.5;
+        }
+
+        function discountPrice() {
+            priceMultiplier = 0.8;
         }
     </script>
 </body>
