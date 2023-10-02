@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-    <h1>SHuShuTAXI タクシーメーター</h1>
+    <h1>ShuShuTAXI タクシーメーター</h1>
     <p>経過時間: <span id="timer">0</span></p>
     <p>料金: <span id="units">0</span></p>
     <div id="progressContainer">
@@ -50,26 +50,38 @@
     </div>
     <button id="startButton" onclick="startStopwatch()">走行開始</button>
     <button id="resetButton" onclick="resetStopwatch()">リセット</button><br><br>
-    <h3>運転開始前に選択</h3>
+    <h3>運転開始後に選択</h3>
     <button id="increasePriceButton" onclick="increasePrice()">深夜</button>
     <button id="decreasePriceButton" onclick="decreasePrice()">株主</button>
     <button id="discountPriceButton" onclick="discountPrice()">得割</button>
+
+    <!-- 音声ファイルを読み込む -->
+    <audio id="audio">
+        <source src="start_sound.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         var timerInterval;
         var elapsedTime = 0;
         var units = 0;
         var priceMultiplier = 1.0;
+        var audioElement = document.getElementById("audio");
 
         function startStopwatch() {
             if (!timerInterval) {
                 document.getElementById("startButton").textContent = "走行終了";
                 timerInterval = setInterval(updateTimer, 1000);
+                playAudio("start_sound.mp3"); // 走行開始音声を再生
             } else {
                 document.getElementById("startButton").textContent = "走行開始";
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
+        }
+
+        function playAudio(audioFile) {
+            audioElement.src = audioFile;
+            audioElement.play();
         }
 
         function updateTimer() {
@@ -97,7 +109,7 @@
             units = 0;
             document.getElementById("timer").textContent = elapsedTime + " 秒";
             document.getElementById("units").textContent = units + " コーン";
-            document.getElementById("startButton").textContent = "スタート";
+            document.getElementById("startButton").textContent = "走行開始";
             var progressBar = document.getElementById("progressBar");
             progressBar.style.width = "0%";
             var coneIcon = document.getElementById("coneIcon");
@@ -106,14 +118,17 @@
 
         function increasePrice() {
             priceMultiplier = 1.5;
+            playAudio("increase_sound.mp3"); // 深夜料金適用音声を再生
         }
 
         function decreasePrice() {
             priceMultiplier = 0.5;
+            playAudio("decrease_sound.mp3"); // 株主料金適用音声を再生
         }
 
         function discountPrice() {
             priceMultiplier = 0.8;
+            playAudio("discount_sound.mp3"); // 得割料金適用音声を再生
         }
     </script>
 </body>
